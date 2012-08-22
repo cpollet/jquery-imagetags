@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="example.css">
+  </head>
+  <body>
+    <h1>Tag</h1>
+    
+    <form id="tags" action="#" method="post">
+    </form>
+    
+    <h1>Add enabled</h1>
+    Demonstrate how to add and get tags. Press shift while tagging to siwtch to centered mode.
+    <div id="container1">
+      <img src="picture.jpg">
+    </div>
+    <a href="#" data-function="getTags">get tags (console.log() them)</a>
+    
+    <h1>Add disabled</h1>
+    Tags added on the previous picture are automatically added on this one to demonstrate the proportional area effect (see README.md).
+    <div id="container2">
+      <img src="picture.jpg" width="400">
+    </div>
+    
+    
+    <p>This picture is from David Pickett (http://www.flickr.com/photos/fallentomato/6958229027/), licensed under CC BY-NC-SA 2.0</p>
+    
+    <script src="http://code.jquery.com/jquery-1.7.1.js"></script>
+    <script src="jquery.imagetags.js"></script>
+    <script>
+      $(function() {
+        $("#container1").imageTags()
+          .on("tagadded", function(e, tag) {
+            $('#tags').append(
+              $('<div></div>')
+                .append('text=<input type="text" value="' + tag.tagContent() + '" /> ')
+                .append('topLeftX=<input type="text" value="' + tag.tagArea().fixed().topLeftX + '"> ')
+                .append('topLeftY=<input type="text" value="' + tag.tagArea().fixed().topLeftY + '"> ')
+                .append('bottomRightX=<input type="text" value="' + tag.tagArea().fixed().bottomRightX + '"> ')
+                .append('bottomRightY=<input type="text" value="' + tag.tagArea().fixed().bottomRightY + '"> ')
+                .append('data=<input type="text" value="' + $.param(tag.tagData() || '') + '"> ')
+            );
+            
+            if (tag.data == null || typeof tag.data.id == 'undefined') { // don't add tags added to both containers
+              $("#container2").imageTags("add", tag.tagContent(), tag.tagArea().toProportional());
+            }
+          });
+        
+        $("#container2").imageTags()
+          .imageTags("disableCreation");
+        
+        $("#container1, #container2")
+          .imageTags('add', 'Steve?', new $.ImageTags.Area(178, 32, 290, 148), {id: 1})
+          .imageTags('add', 'A creeper', new $.ImageTags.Area(0.5625, 0.07112970711297072, 0.7890625, 0.600418410041841, 'proportional'), {id: 2});
+        
+        $("[data-function]").click(function(e) {
+          console.log($("#container1").imageTags($(this).attr("data-function")));
+          e.preventDefault();
+        });
+      });
+    </script>
+  </body>
+</html>

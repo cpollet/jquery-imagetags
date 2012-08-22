@@ -1,0 +1,25 @@
+.jquery-imagetags-container a {
+  background-image: url(#); /* IE mousemove hack */
+}
+
+.jquery-imagetags-container a.jquery-imagetags-tag {
+  display: none;
+}
+
+.jquery-imagetags-container a.jquery-imagetags-tag-inactive {
+  display: block;
+  border: 1px solid gray;
+}
+
+.jquery-imagetags-container a.jquery-imagetags-tag-active {
+  display: block;
+  border: 1px solid white;
+}
+
+.jquery-imagetags-container div.jquery-imagetags-text-container {
+  background: #222;
+  border: 1px solid black;
+  color: white;
+  font-family: sans-serif;
+  padding: 5px;
+}
