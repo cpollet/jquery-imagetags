@@ -135,7 +135,7 @@ Constructor. ``(x1, y1)`` and ``(x2, y2)`` define the top-left and bottom-right 
 for conversions between fixed and proportional area, see below.
 * **setImageSize( [ _int_ height, _int_ width ] )**  
 Sets the image size, used to translate fixed position to/from proportional ones.
-* **fixed( [ _int_ height, _int_ width ] ): _object { _int_ x1, _int_ y1, _int_ x2, _int_ y2 }_**  
+* **fixed( [ _int_ height, _int_ width ] ): _object_ { _int_ x1, _int_ y1, _int_ x2, _int_ y2 }**  
 Returns the fixed position corresponding to the current area. 3 cases can occur:
  1. If the area is already using fixed poistion as internal representation (defined during object's initialization) this position is returned;
  2. If the area has an known image size it is are used to compute the fixed position, regardless of height and width parameters;
