@@ -42,7 +42,7 @@
                 .append('data=<input type="text" value="' + $.param(tag.tagData() || '') + '"> ')
             );
             
-            if (tag.data == null || typeof tag.data.id == 'undefined') { // don't add tags added to both containers
+            if (tag.tagData().id == null) { // don't add tags added to both containers
               $("#container2").imageTags("add", tag.tagContent(), tag.tagArea().toProportional());
             }
           });

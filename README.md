@@ -101,8 +101,6 @@ Cancels the tag's creation (through a call to ``$.ImageTags.cancel()``).
 Remove the tag. Fires the ``tagremoved`` event.
 * **tagger(): _$.ImageTags_**  
 Returns the instance if _$.ImageTags_ that is responsible of this particular tag.
-* **tagElement(): _$(&lt;a&gt;)_**  
-Returns the DOM element that draws the tag's frame on the picture.
 * **tagContent(): _string_**  
 Returns the tag's content (the text shown when the mouse is over the tag frame).
 * **setTagContent(_string_): _void_**  
@@ -113,6 +111,8 @@ Returns the tag's area (see ``$.ImageTags.Area``).
 Returns arbitraty user data associated with this tag.
 * **setTagData(_object_): _void_**  
 Sets arbitrary user data associated with this tag.
+* **domTagElement(): _$(&lt;a&gt;)_**  
+Returns the DOM element that draws the tag's frame on the picture.
 * **domContainer(): _$(&lt;div&gt;)_**  
 Returns the DOM element that contains the image and the tags (i.e. the elements returned by ``$(selector)`` when calling ``$.fn.imageTags()`` during the setup).
 * **domContent(): _$(&lt;div&gt;)_**  
@@ -135,14 +135,14 @@ Constructor. ``(x1, y1)`` and ``(x2, y2)`` define the top-left and bottom-right 
 for conversions between fixed and proportional area, see below.
 * **setImageSize( [ _int_ height, _int_ width ] )**  
 Sets the image size, used to translate fixed position to/from proportional ones.
-* **fixed( [ _int_ height, _int_ width ] ): _object_ { _int_ x1, _int_ y1, _int_ x2, _int_ y2 }**  
+* **fixed( [ _int_ height, _int_ width ] ): _object_ { _int_ topLeftX, _int_ topLeftY, _int_ bottomRightX, _int_ bottomRightY }**  
 Returns the fixed position corresponding to the current area. 3 cases can occur:
  1. If the area is already using fixed poistion as internal representation (defined during object's initialization) this position is returned;
  2. If the area has an known image size it is are used to compute the fixed position, regardless of height and width parameters;
  3. Otherwise, the height and width parameters are used to do the conversion.
 * **toFixed( [ _int_ height, _int_ width ] ): _$.ImageTags.Area_**  
 Returns a new area instance corresponding to the fixed positions. The height and width parametes usage is the same as described for ``fixed()``.
-* **proportional( [ _int_ height, _int_ width ] )**  
+* **proportional( [ _int_ height, _int_ width ] ): _object_ { _int_ topLeftX, _int_ topLeftY, _int_ bottomRightX, _int_ bottomRightY }**  
 Returns the fixed position proportional to the current area. Same remarks as ``fixed()`` apply regarding the parameters.
 * **toProportional( [ _int_ height, _int_ width ] )**  
 Returns a new area instance corresponding to the proportional positions. Same remarks as ``fixed()`` apply regarding the parameters.

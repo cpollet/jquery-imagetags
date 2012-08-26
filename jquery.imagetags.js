@@ -39,7 +39,7 @@
         delete this._currentTag._origin;
       }
       
-      this._currentTag.tagElement()
+      this._currentTag.domTagElement()
         .removeClass(this._htmlClass('tag-active'))
         .addClass(this._htmlClass('tag'))
         .on('mousemove.jquery-tag', null, { tag: this._currentTag }, ImageTags.Handlers.tag.mousemove)
@@ -53,7 +53,7 @@
     },
     
     cancel: function() {
-      this._currentTag.tagElement().remove();
+      this._currentTag.domTagElement().remove();
       this._currentTag = null;
     },
     
@@ -61,20 +61,20 @@
       area = area.toFixed(this._image.height(), this._image.width());
       
       this._currentTag = new ImageTags.Tag({
-        tagger:       this,
-        tagElement:   this._buildTagElement({
+        tagger:        this,
+        tagContent:    html,
+        tagArea:       area,
+        tagData:       data,
+        domTagElement: this._buildTagElement({
             x: area.fixed().topLeftX,
             y: area.fixed().topLeftY
           }, area.fixed().bottomRightY - area.fixed().topLeftY, area.fixed().bottomRightX - area.fixed().topLeftX),
-        tagContent:   html,
-        tagArea:      area,
-        tagData:      data,
-        domContainer: this._container,
-        domContent:   this._contentContainer,
-        domImage:     this._image
+        domContainer:  this._container,
+        domContent:    this._contentContainer,
+        domImage:      this._image
       });
       
-      this._currentTag.tagElement().attr('data-imagetags-tagid', this._currentTag.tagId());
+      this._currentTag.domTagElement().attr('data-imagetags-tagid', this._currentTag.tagId());
       
       this.finalize();
     },
@@ -91,7 +91,7 @@
         this._tags.splice(i, 1);
         
         tag.domContent().hide();
-        tag.tagElement().remove();
+        tag.domTagElement().remove();
         
         this._container.trigger('tagremoved', tag);
       }
@@ -175,14 +175,14 @@
         this._drawingTag = true;
         
         this._currentTag = new ImageTags.Tag({
-          tagger:       this,
-          tagElement:   this._buildTagElement(position),
-          domContainer: this._container,
-          domContent:   this._contentContainer,
-          domImage:     this._image
+          tagger:        this,
+          domTagElement: this._buildTagElement(position),
+          domContainer:  this._container,
+          domContent:    this._contentContainer,
+          domImage:      this._image
         });
         
-        this._currentTag.tagElement().attr("data-imagetags-tagid", this._currentTag.tagId());
+        this._currentTag.domTagElement().attr("data-imagetags-tagid", this._currentTag.tagId());
         this._currentTag._origin = position;
       }
     },
@@ -192,7 +192,7 @@
         return;
       }
       
-      var element = this._currentTag.tagElement();
+      var element = this._currentTag.domTagElement();
       var origin = this._currentTag._origin;
       
       if (this._mode == 'center') {
@@ -221,10 +221,10 @@
           .css('height', this._px(Math.abs(height)))
       }
       
-      var x1 = Math.round(this._currentTag.tagElement().position().left);
-      var y1 = Math.round(this._currentTag.tagElement().position().top);
-      var x2 = Math.round(x1 + this._currentTag.tagElement().width());
-      var y2 = Math.round(y1 + this._currentTag.tagElement().height());
+      var x1 = Math.round(this._currentTag.domTagElement().position().left);
+      var y1 = Math.round(this._currentTag.domTagElement().position().top);
+      var x2 = Math.round(x1 + this._currentTag.domTagElement().width());
+      var y2 = Math.round(y1 + this._currentTag.domTagElement().height());
       
       this._currentTag._tagArea = new ImageTags.Area(
         x1,
@@ -314,7 +314,9 @@
         this.fixed(height, width).topLeftY,
         this.fixed(height, width).bottomRightX,
         this.fixed(height, width).bottomRightY,
-        'fixed'
+        'fixed',
+        height,
+        width
       );
     },
     
@@ -359,11 +361,12 @@
   ImageTags.Tag = function(properties) {
     this._tagger        = properties.tagger;
     
-    this._tagElement    = properties.tagElement;
+    
     this._tagContent    = properties.tagContent;
     this._tagArea       = properties.tagArea;
-    this._tagData       = properties.tagData; // custom data
+    this._tagData       = properties.tagData || {}; // custom data
     
+    this._domTagElement = properties.domTagElement;
     this._domContainer  = properties.domContainer;
     this._domContent    = properties.domContent;
     this._domImage      = properties.domImage;
@@ -393,10 +396,6 @@
       return this._tagId;
     },
     
-    tagElement: function() {
-      return this._tagElement;
-    },
-    
     tagContent: function() {
       return this._tagContent;
     },
@@ -417,6 +416,10 @@
     setTagData: function(data) {
       this._tagData = data;
       return this;
+    },
+    
+    domTagElement: function() {
+      return this._domTagElement;
     },
     
     domContainer: function() {
@@ -454,7 +457,7 @@
         }
         
         for (var i = 0; i < tags.length; i++) {
-          tags[i].tagElement()
+          tags[i].domTagElement()
             .addClass(self._htmlClass('tag-inactive'))
             .removeClass(self._htmlClass('tag'));
         }
@@ -488,7 +491,7 @@
         var tags = self._tags;
 
         for (var i = 0; i < tags.length; i++) {
-          tags[i].tagElement()
+          tags[i].domTagElement()
             .addClass(self._htmlClass('tag'))
             .removeClass(self._htmlClass('tag-inactive'));
         }
@@ -511,7 +514,7 @@
         
         tag.isDisplayed(true);
         
-        tag.tagElement()
+        tag.domTagElement()
           .addClass(self._htmlClass('tag-active'))
           .removeClass(self._htmlClass('tag'))
           .removeClass(self._htmlClass('tag-inactive'));
@@ -519,7 +522,7 @@
         tag.domContent()
           .hide()
           .html(tag.tagContent())
-          .css('top', self._px(tag.tagArea().fixed().topLeftY + tag.tagElement().outerHeight()))
+          .css('top', self._px(tag.tagArea().fixed().topLeftY + tag.domTagElement().outerHeight()))
           .css('left', self._px(tag.tagArea().fixed().topLeftX))
           .off('mousemove.jquery-tag').on('mousemove.jquery-tag', null, { tag: tag }, ImageTags.Handlers.tag.mousemove)
           .off('mouseleave.jquery-tag').on('mouseleave.jquery-tag', null, { tag: tag }, ImageTags.Handlers.tag.mouseleave)
@@ -533,7 +536,7 @@
         
         tag.domContent().hide();
         
-        tag.tagElement()
+        tag.domTagElement()
           .addClass(self._htmlClass('tag-inactive'))
           .removeClass(self._htmlClass('tag'))
           .removeClass(self._htmlClass('tag-active'));

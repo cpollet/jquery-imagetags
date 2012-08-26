@@ -36,7 +36,7 @@
                   tag.remove();
                 }
               })
-              .appendTo(tag.tagElement());
+              .appendTo(tag.domTagElement());
           })
           .on("tagremoved", function(e, tag) {
             alert("Tag [" + tag.tagId() + ": " + tag.tagContent() + "] removed");
